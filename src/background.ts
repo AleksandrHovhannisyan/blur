@@ -42,7 +42,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
             // Insert span for selected portion
             const span = document.createElement("span");
-            span.style.filter = "blur(0.4em)";
+            span.style.filter = "blur(var(--text-blur-radius, 0.4em))";
             span.textContent = selectedText;
             node.parentNode?.insertBefore(span, node);
 
