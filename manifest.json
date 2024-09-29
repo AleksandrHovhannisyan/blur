@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Blur highlighted text anywhere on a page.",
+  "name": "blur-text",
   "version": "1.0.0",
-  "description": "A simple extension that adds a custom context menu item.",
+  "description": "Blur highlighted text anywhere on a page.",
   "permissions": [
     "contextMenus", 
     "scripting", 
