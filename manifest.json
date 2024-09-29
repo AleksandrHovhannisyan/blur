@@ -11,6 +11,6 @@
   "action": {},
   "background": {
     "service_worker": "src/background.js",
-    "type": "module"
+    "scripts": ["src/background.js"]
   }
 }
