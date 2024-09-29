@@ -61,8 +61,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         }
 
         // Start wrapping text nodes from the common ancestor of the range
-        const commonAncestor = range.commonAncestorContainer;
-        blurTextNodes(commonAncestor);
+        blurTextNodes(range.commonAncestorContainer);
 
         // Clear the selection
         selection.removeAllRanges();
