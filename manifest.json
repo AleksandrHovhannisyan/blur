@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Blur highlighted text anywhere on a page.",
+  "version": "1.0.0",
+  "description": "A simple extension that adds a custom context menu item.",
+  "permissions": [
+    "contextMenus", 
+    "scripting", 
+    "activeTab"
+  ],
+  "action": {},
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  }
+}
