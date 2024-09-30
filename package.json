@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "compile": "pnpm exec tsc",
-    "copy-assets": "rsync -av --exclude 'tsconfig.json' --exclude 'src' --exclude 'dist' --exclude node_modules --exclude .gitignore --exclude .git ./ dist/",
+    "copy-assets": "rsync -av manifest.json LICENSE dist/",
     "build": "pnpm clean && pnpm compile && pnpm copy-assets"
   },
   "keywords": ["chrome extension", "blur text"],
