@@ -12,9 +12,13 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (typeof tab?.id !== "undefined" && info.menuItemId === BLUR_MENU_ITEM_ID) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
+      // NOTE: all variables used in this handler must be within its scope. The browser extension runtime invokes this as a standalone function stripped of all its enclosing scopes.
       func: () => {
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return;
+
+        const wrapperTemplate = document.createElement("span");
+        wrapperTemplate.style.filter = "blur(var(--text-blur-radius, 0.4em))";
 
         const TEXT_PARENTS_TO_IGNORE = new Set([
           "script",
@@ -26,7 +30,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         const isValidParent = (element: Element) =>
           !TEXT_PARENTS_TO_IGNORE.has(element.tagName.toLowerCase());
 
-        const getSelectedTextNodes = (range: Range) => {
+        const getTextNodesInRange = (range: Range) => {
           const textNodes: Text[] = [];
 
           const walker = document.createTreeWalker(
@@ -38,7 +42,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
                 if (parentElement && !isValidParent(parentElement)) {
                   return NodeFilter.FILTER_REJECT;
                 }
-                if (!node.textContent?.trim()) {
+                if (!node.textContent) {
                   return NodeFilter.FILTER_REJECT;
                 }
                 return range.intersectsNode(node)
@@ -48,7 +52,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
             }
           );
           // commonAncestorContainer would be a text node only if the highlight is just pure text. Otherwise, if it spans element boundaries, get nextNode.
-          let currentNode: Node | null =
+          let currentNode =
             walker.currentNode.nodeType === Node.TEXT_NODE
               ? walker.currentNode
               : walker.nextNode();
@@ -59,122 +63,104 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
           return textNodes;
         };
 
-        const createBlurSpan = (textContent: string) => {
-          const blurSpan = document.createElement("span");
-          blurSpan.textContent = textContent;
-          blurSpan.style.filter = "blur(var(--text-blur-radius, 0.4em))";
-          return blurSpan;
+        /** Wraps the given node's contents in the range `[startOffset, endOffset)`. */
+        const wrapNodeText = (params: {
+          /** The node whose text contents we want to wrap. */
+          node: Node;
+          /** The character offset to start from (inclusive). */
+          startOffset?: number;
+          /** The character to end at (exclusive). */
+          endOffset?: number;
+          /** The element with which to wrap `node`'s contents. */
+          wrapperElement?: HTMLElement;
+        }) => {
+          const {
+            node,
+            startOffset,
+            endOffset,
+            wrapperElement = wrapperTemplate,
+          } = params;
+          // Ignore pure-whitespace nodes. Do this here rather than in tree walker so that the range start/end offsets line up with the actual first/last text nodes in the range.
+          if (!node.textContent?.trim() || node.nodeType !== Node.TEXT_NODE) {
+            return;
+          }
+          const wrapper = wrapperElement.cloneNode();
+          const range = document.createRange();
+          range.selectNodeContents(node);
+          if (typeof startOffset !== "undefined") {
+            range.setStart(node, startOffset);
+          }
+          if (typeof endOffset !== "undefined") {
+            range.setEnd(node, endOffset);
+          }
+          range.surroundContents(wrapper);
         };
 
-        const replaceWithNodes = (
-          oldChild: Node,
-          newChildren: Node | Node[]
-        ) => {
-          const { parentElement } = oldChild;
-          if (!parentElement || !isValidParent(parentElement)) return;
-          ([] as Node[]).concat(newChildren).forEach((newChild) => {
-            parentElement.insertBefore(newChild, oldChild);
-          });
-          parentElement.removeChild(oldChild);
-        };
-
+        // A selection can have multiple ranges (e.g., if you do Ctrl+A to select all text on a page).
         for (let i = 0; i < selection.rangeCount; i++) {
           const range = selection.getRangeAt(i);
-          console.log({
-            startContainer: range.startContainer,
-            startOffset: range.startOffset,
-            endContainer: range.endContainer,
-            endOffset: range.endOffset,
-          });
-          const selectedTextNodes = getSelectedTextNodes(range);
-          console.log("selectedTextNodes", selectedTextNodes);
-          selectedTextNodes.forEach((textNode, textNodeIndex) => {
-            if (!textNode.textContent) return;
+          const selectedTextNodes = getTextNodesInRange(range);
+          console.log(range, selectedTextNodes);
 
-            // Start and end node are the same (e.g., if you highlight just a single text node or a paragraph)
+          selectedTextNodes.forEach((node, nodeIndex) => {
+            if (!node.textContent) return;
+
+            // Only one text node was selected, so start and end node are the same (e.g., if you highlight just a single text node or a single paragraph/h1/etc.)
             if (selectedTextNodes.length === 1) {
-              // Single element node. Select all the children that fall within the start and end offsets.
+              // Single element node. Wrap each child in the range [start, end).
               if (range.startContainer.nodeType === Node.ELEMENT_NODE) {
                 Array.from(range.startContainer.childNodes)
-                  .slice(range.startOffset, range.endOffset)
-                  .forEach((child) => {
-                    if (!child.textContent) return;
-                    replaceWithNodes(child, createBlurSpan(child.textContent));
-                  });
+                  .slice(
+                    range.startOffset,
+                    range.startContainer === range.endContainer
+                      ? range.endOffset
+                      : undefined
+                  )
+                  .forEach((child) => wrapNodeText({ node: child }));
               } else {
-                // Single text node, e.g., split t[ex]t into: "t" (before) "ex" (selected) "t" (after).
-                const beforeNode = document.createTextNode(
-                  textNode.textContent.slice(0, range.startOffset)
-                );
-                const selectedNode = createBlurSpan(
-                  textNode.textContent.slice(range.startOffset, range.endOffset)
-                );
-                const afterNode = document.createTextNode(
-                  textNode.textContent.slice(range.endOffset)
-                );
-                replaceWithNodes(textNode, [
-                  beforeNode,
-                  selectedNode,
-                  afterNode,
-                ]);
+                // Single text node, e.g., t[ex]t => "t" (unwrapped) "ex" (wrapped) "t" (unwrapped).
+                wrapNodeText({
+                  node,
+                  startOffset: range.startOffset,
+                  endOffset: range.endOffset,
+                });
               }
             } else {
               // First of n > 1 text nodes
-              if (textNodeIndex === 0) {
+              if (nodeIndex === 0) {
                 // Range starts at an element, so wrap its children
                 if (range.startContainer.nodeType === Node.ELEMENT_NODE) {
-                  Array.from(range.startContainer.childNodes).slice(range.startOffset).forEach((child) => {
-                    if (!child.textContent || child.nodeType !== Node.TEXT_NODE) return;
-                    replaceWithNodes(child, createBlurSpan(child.textContent))
-                  })
+                  Array.from(range.startContainer.childNodes)
+                    .slice(range.startOffset)
+                    .forEach((child) => wrapNodeText({ node: child }));
                 } else {
-                  // Range starts at a text node e.g., split te[xt] into "te" (unwrapped) and "xt" (wrapped)
-                  const beforeNode = document.createTextNode(
-                    textNode.textContent.slice(0, range.startOffset)
-                  );
-                  const selectedNode = createBlurSpan(
-                    textNode.textContent.slice(range.startOffset)
-                  );
-                  replaceWithNodes(textNode, [beforeNode, selectedNode]);
+                  // Range starts at a text node e.g., te[xt] => "te" (unwrapped) and "xt" (wrapped)
+                  wrapNodeText({ node, startOffset: range.startOffset });
                 }
               }
               // Last of n > 1 text nodes
-              else if (textNodeIndex === selectedTextNodes.length - 1) {
+              else if (nodeIndex === selectedTextNodes.length - 1) {
                 // End container is an element, so pick the first `endOffset` children and select them fully.
                 if (range.endContainer.nodeType === Node.ELEMENT_NODE) {
-                  replaceWithNodes(
-                    textNode,
-                    createBlurSpan(textNode.textContent)
-                  );
-                  // FIXME: why doesn't this work? It ends up selecting script tags
-                  // Array.from(range.endContainer.childNodes)
-                  //   .slice(0, range.endOffset)
-                  //   .forEach((child) => {
-                  //     if (!child.textContent) return;
-                  //     replaceWithNodes(
-                  //       textNode,
-                  //       createBlurSpan(child.textContent)
-                  //     );
-                  //   });
+                  // wrapNodeText({ node });
+                  Array.from(range.endContainer.childNodes)
+                    .slice(0, range.endOffset)
+                    .forEach((child) => wrapNodeText({ node: child }));
                 }
                 // End container is a text node, so endOffset represents a character offset within a string
                 else if (range.endContainer.nodeType === Node.TEXT_NODE) {
-                  // e.g., split [te]xt into "te" (wrapped) and "xt" (unwrapped)
-                  const selectedNode = createBlurSpan(
-                    textNode.textContent.trimStart().slice(0, range.endOffset)
-                  );
-                  const afterNode = document.createTextNode(
-                    textNode.textContent.trimStart().slice(range.endOffset)
-                  );
-                  console.log("last node is text", { selectedNode, afterNode });
-                  replaceWithNodes(textNode, [selectedNode, afterNode]);
+                  // e.g., [te]xt => "te" (wrapped) and "xt" (unwrapped)
+                  wrapNodeText({ node, endOffset: range.endOffset });
                 }
               } else {
                 // In-between text nodes (for n > 1) are easy: blur all of them
-                replaceWithNodes(
-                  textNode,
-                  createBlurSpan(textNode.textContent)
-                );
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                  node.childNodes.forEach((child) =>
+                    wrapNodeText({ node: child })
+                  );
+                } else {
+                  wrapNodeText({ node });
+                }
               }
             }
           });
