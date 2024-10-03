@@ -7,8 +7,6 @@ chrome.contextMenus.create({
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  console.log(BLUR_MENU_ITEM_ID);
-
   if (typeof tab?.id !== "undefined" && info.menuItemId === BLUR_MENU_ITEM_ID) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
@@ -64,7 +62,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         };
 
         /** Wraps the given node's contents in the range `[startOffset, endOffset)`. */
-        const wrapNodeText = (params: {
+        const wrapNode = (params: {
           /** The node whose text contents we want to wrap. */
           node: Node;
           /** The character offset to start from (inclusive). */
@@ -100,69 +98,13 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         for (let i = 0; i < selection.rangeCount; i++) {
           const range = selection.getRangeAt(i);
           const selectedTextNodes = getTextNodesInRange(range);
-          console.log(range, selectedTextNodes);
+          // console.log(range, selectedTextNodes);
 
-          selectedTextNodes.forEach((node, nodeIndex) => {
+          selectedTextNodes.forEach((node) => {
             if (!node.textContent) return;
-
-            // Only one text node was selected, so start and end node are the same (e.g., if you highlight just a single text node or a single paragraph/h1/etc.)
-            if (selectedTextNodes.length === 1) {
-              // Single element node. Wrap each child in the range [start, end).
-              if (range.startContainer.nodeType === Node.ELEMENT_NODE) {
-                Array.from(range.startContainer.childNodes)
-                  .slice(
-                    range.startOffset,
-                    range.startContainer === range.endContainer
-                      ? range.endOffset
-                      : undefined
-                  )
-                  .forEach((child) => wrapNodeText({ node: child }));
-              } else {
-                // Single text node, e.g., t[ex]t => "t" (unwrapped) "ex" (wrapped) "t" (unwrapped).
-                wrapNodeText({
-                  node,
-                  startOffset: range.startOffset,
-                  endOffset: range.endOffset,
-                });
-              }
-            } else {
-              // First of n > 1 text nodes
-              if (nodeIndex === 0) {
-                // Range starts at an element, so wrap its children
-                if (range.startContainer.nodeType === Node.ELEMENT_NODE) {
-                  Array.from(range.startContainer.childNodes)
-                    .slice(range.startOffset)
-                    .forEach((child) => wrapNodeText({ node: child }));
-                } else {
-                  // Range starts at a text node e.g., te[xt] => "te" (unwrapped) and "xt" (wrapped)
-                  wrapNodeText({ node, startOffset: range.startOffset });
-                }
-              }
-              // Last of n > 1 text nodes
-              else if (nodeIndex === selectedTextNodes.length - 1) {
-                // End container is an element, so pick the first `endOffset` children and select them fully.
-                if (range.endContainer.nodeType === Node.ELEMENT_NODE) {
-                  // wrapNodeText({ node });
-                  Array.from(range.endContainer.childNodes)
-                    .slice(0, range.endOffset)
-                    .forEach((child) => wrapNodeText({ node: child }));
-                }
-                // End container is a text node, so endOffset represents a character offset within a string
-                else if (range.endContainer.nodeType === Node.TEXT_NODE) {
-                  // e.g., [te]xt => "te" (wrapped) and "xt" (unwrapped)
-                  wrapNodeText({ node, endOffset: range.endOffset });
-                }
-              } else {
-                // In-between text nodes (for n > 1) are easy: blur all of them
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                  node.childNodes.forEach((child) =>
-                    wrapNodeText({ node: child })
-                  );
-                } else {
-                  wrapNodeText({ node });
-                }
-              }
-            }
+            let startOffset = node === range.startContainer ? range.startOffset : undefined;
+            let endOffset = node === range.endContainer ? range.endOffset : undefined;
+            wrapNode({ node, startOffset, endOffset });
           });
         }
 
