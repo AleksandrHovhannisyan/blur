@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
-    copyPublicDir: 'public',
+    copyPublicDir: true,
     outDir: 'dist',
     rollupOptions: {
       input: {
