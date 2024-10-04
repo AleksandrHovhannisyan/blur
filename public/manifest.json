@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "blur-text",
+  "name": "Blur Text",
   "version": "1.0.0",
   "description": "Blur highlighted text anywhere on a page.",
   "permissions": [
