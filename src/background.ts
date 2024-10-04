@@ -16,7 +16,8 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         if (!selection || selection.rangeCount === 0) return;
 
         const wrapperTemplate = document.createElement("span");
-        wrapperTemplate.style.filter = "blur(var(--text-blur-radius, 0.4em))";
+        wrapperTemplate.style.filter =
+          "blur(var(--__text-blur-intensity, 0.5em))";
 
         const TEXT_PARENTS_TO_IGNORE = new Set([
           "script",
@@ -38,9 +39,6 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
               acceptNode(node) {
                 const parentElement = node.parentElement;
                 if (parentElement && !isValidParent(parentElement)) {
-                  return NodeFilter.FILTER_REJECT;
-                }
-                if (!node.textContent) {
                   return NodeFilter.FILTER_REJECT;
                 }
                 return range.intersectsNode(node)
@@ -98,12 +96,13 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         for (let i = 0; i < selection.rangeCount; i++) {
           const range = selection.getRangeAt(i);
           const selectedTextNodes = getTextNodesInRange(range);
-          // console.log(range, selectedTextNodes);
 
           selectedTextNodes.forEach((node) => {
             if (!node.textContent) return;
-            let startOffset = node === range.startContainer ? range.startOffset : undefined;
-            let endOffset = node === range.endContainer ? range.endOffset : undefined;
+            let startOffset =
+              node === range.startContainer ? range.startOffset : undefined;
+            let endOffset =
+              node === range.endContainer ? range.endOffset : undefined;
             wrapNode({ node, startOffset, endOffset });
           });
         }

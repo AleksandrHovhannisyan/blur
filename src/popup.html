@@ -1,0 +1,56 @@
+<html>
+ <head>
+   <meta charset="utf-8">
+   <title>Blur Text</title>
+   <script type="module" src="./popup.js"></script>
+   <style>
+    html {
+      color-scheme: dark;
+    }
+    body {
+      font-family: system-ui, sans-serif;
+      line-height: 1.5;
+      padding: 1rem;
+    }
+    fieldset {
+      padding-block-start: 1rem;
+    }
+    legend {
+      font-size: small;
+    }
+    ul, ol {
+      padding-inline-start: 1em;
+    }
+    label {
+      display: block;
+    }
+    input {
+      width: 100%;
+    }
+    li + li {
+      margin-block-start: 0.25rem;
+    }
+    .star::marker {
+      content: "⭐";
+    }
+    .heart::marker {
+      content: "❤️";
+    }
+   </style>
+ </head>
+ <body>
+    <h1>Blur Text</h1>
+    <fieldset>
+      <legend>Settings</legend>
+      <label for="blur-intensity">Blur intensity</label>
+      <input id="blur-intensity" type="range" min="0.0" max="1.0" value="0.5" step="0.1" />
+    </fieldset>
+    <footer>
+      <p>Developed by <a href="https://www.aleksandrhovhannisyan.com/">Aleksandr Hovhannisyan</a></p>
+      <ul>
+        <li class="star"><a href="https://github.com/AleksandrHovhannisyan/blur-text">Star on GitHub</a></li>
+        <li class="heart"><a href="https://buymeacoffee.com/hovhadovah">Support my work</a></li>
+      </ul>
+    </footer>
+ </body>
+</html>

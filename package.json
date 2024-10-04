@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "compile": "pnpm exec tsc",
-    "copy-assets": "rsync -av manifest.json LICENSE dist/",
+    "copy-assets": "cp manifest.json LICENSE dist/ && cp src/popup.html dist/src/popup.html",
     "build": "pnpm clean && pnpm compile && pnpm copy-assets"
   },
   "keywords": ["chrome extension", "blur text"],
