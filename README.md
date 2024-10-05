@@ -1,6 +1,17 @@
-# Blur Selection
+# Blur Content
 
-> A browser extension to highlight and blur text, images, and videos anywhere on a page.
+> A browser extension to blur highlighted text and media anywhere on a page.
+
+![Google image search results, with all text and images blurred out.](./screenshots/google.jpg)
+
+![Google image search results blurred out. The browser address bar has a popup open for the extension, with a range slider to change the blur intensity.](./screenshots/popup.jpg)
+
+![YouTube video search results, with all text and images blurred out.](./screenshots/youtube.jpg)
+
+![Reddit.com front page feed, with all text and images blurred out.](./screenshots/reddit.jpg)
+
+
+## Compatibility
 
 Compatible with:
 
