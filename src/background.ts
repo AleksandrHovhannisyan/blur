@@ -20,6 +20,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return;
 
+        // NOTE: Normally, you can't select these elements, but ctrl+a selection will actually include them (wtf?) and the tree walker will crawl them.
         const DISALLOWED_TEXT_PARENTS = new Set([
           "script",
           "style",
