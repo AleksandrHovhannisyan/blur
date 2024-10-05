@@ -26,9 +26,6 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
           "noscript",
         ]);
 
-        const isValidParent = (element: Element) =>
-          !TEXT_PARENTS_TO_IGNORE.has(element.tagName.toLowerCase());
-
         const getTextNodesInRange = (range: Range) => {
           const textNodes: Text[] = [];
 
@@ -38,7 +35,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
             {
               acceptNode(node) {
                 const parentElement = node.parentElement;
-                if (parentElement && !isValidParent(parentElement)) {
+                if (parentElement && TEXT_PARENTS_TO_IGNORE.has(parentElement.tagName.toLowerCase())) {
                   return NodeFilter.FILTER_REJECT;
                 }
                 return range.intersectsNode(node)
