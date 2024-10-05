@@ -17,7 +17,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
         /** Blurs the given element by applying an inline CSS filter. */
         const blurElement = (element: HTMLElement) => {
-          element.style.filter = "blur(var(--__text-blur-intensity, 0.5em))";
+          element.style.filter = "blur(calc(var(--__text-blur-intensity, 0.5) * 1em))";
         };
 
         const TEXT_PARENTS_TO_IGNORE = new Set([
