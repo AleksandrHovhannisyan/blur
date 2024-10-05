@@ -1,6 +1,6 @@
 # Blur Content
 
-> A browser extension to blur highlighted text and media anywhere on a page.
+> A browser extension to blur any highlighted text and media on a page.
 
 ![Google image search results, with all text and images blurred out.](./screenshots/google.jpg)
 
