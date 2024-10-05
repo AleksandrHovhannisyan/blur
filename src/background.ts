@@ -15,17 +15,26 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return;
 
-        /** Blurs the given element by applying an inline CSS filter. */
-        const blurElement = (element: HTMLElement) => {
-          element.style.filter = "blur(calc(var(--__text-blur-intensity, 0.5) * 1em))";
-        };
-
-        const TEXT_PARENTS_TO_IGNORE = new Set([
+        const DISALLOWED_TEXT_PARENTS = new Set([
           "script",
           "style",
           "iframe",
           "noscript",
         ]);
+
+        const ALLOWED_MEDIA_TAGS = new Set(['img', 'video']);
+
+        /** Blurs the given element by applying an inline CSS filter. */
+        const blurElement = (element: HTMLElement) => {
+          let unitMultiplier: `${number}em` | `${number}px`;
+          if (ALLOWED_MEDIA_TAGS.has(element.tagName.toLowerCase())) {
+            const { clientWidth, clientHeight } = element;
+            unitMultiplier = `${Math.min(clientWidth, clientHeight) * 0.5}px`;
+          } else {
+            unitMultiplier = '0.5em';
+          }
+          element.style.filter = `blur(calc(var(--__text-blur-intensity, 0.5) * ${unitMultiplier}))`;
+        };
 
         /** Returns all of the text nodes that intersect with the given range. */
         const getTextNodesInRange = (range: Range): Text[] => {
@@ -38,7 +47,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
               const parentElement = node.parentElement;
               if (
                 parentElement &&
-                TEXT_PARENTS_TO_IGNORE.has(parentElement.tagName.toLowerCase())
+                DISALLOWED_TEXT_PARENTS.has(parentElement.tagName.toLowerCase())
               ) {
                 return NodeFilter.FILTER_REJECT;
               }
@@ -116,7 +125,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
               ? (Array.from(
                   (
                     range.commonAncestorContainer as HTMLElement
-                  ).querySelectorAll("img, video")
+                  ).querySelectorAll(Array.from(ALLOWED_MEDIA_TAGS.values()).join(', '))
                 ) as HTMLElement[])
               : []
           ).filter((element) => range.intersectsNode(element));
