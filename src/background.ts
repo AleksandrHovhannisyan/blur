@@ -27,12 +27,11 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         /** Blurs the given element by applying an inline CSS filter. */
         const blurElement = (element: HTMLElement) => {
           let unitMultiplier: `${number}em` | `${number}px`;
-          const scalar = 0.5; // TODO: this is somewhat arbitrary. Maybe there's a better way?
           if (ALLOWED_MEDIA_TAGS.has(element.tagName.toLowerCase())) {
             const { clientWidth, clientHeight } = element;
-            unitMultiplier = `${Math.min(clientWidth, clientHeight) * scalar}px`;
+            unitMultiplier = `${Math.min(clientWidth, clientHeight) * 0.2}px`;
           } else {
-            unitMultiplier = `${scalar}em`;
+            unitMultiplier = `0.5em`;
           }
           element.style.filter = `blur(calc(var(--__text-blur-intensity, 0.5) * ${unitMultiplier}))`;
         };
