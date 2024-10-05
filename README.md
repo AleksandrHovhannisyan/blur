@@ -14,3 +14,9 @@ Compatible with:
 3. Click the `Blur` option to blur the selected text.
 
 You can control the blur intensity from the extension pop-up menu.
+
+## Feature Planning
+
+Nice-to-haves:
+- [ ] Media blurring (images, videos)
+- [ ] Sync to profile rather than local
