@@ -27,7 +27,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           "noscript",
         ]);
 
-        const ALLOWED_MEDIA_TAGS = new Set(['img', 'video']);
+        const ALLOWED_MEDIA_TAGS = new Set(['img', 'video', 'iframe']);
 
         /** Blurs the given element by applying an inline CSS filter. */
         const blurElement = (element: HTMLElement) => {
