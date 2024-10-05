@@ -10,7 +10,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (typeof tab?.id !== "undefined" && info.menuItemId === BLUR_MENU_ITEM_ID) {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      // NOTE: all variables used in this handler must be within its scope. The browser extension runtime invokes this as a standalone function stripped of all its enclosing scopes.
+      args: [],
       func: () => {
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return;
