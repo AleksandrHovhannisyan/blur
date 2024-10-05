@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Blur Text",
+  "name": "Blur Content",
   "version": "1.0.0",
-  "description": "Blur highlighted text anywhere on a page.",
+  "description": "Blur highlighted text and media anywhere on a page.",
   "permissions": [
     "contextMenus", 
     "scripting", 
