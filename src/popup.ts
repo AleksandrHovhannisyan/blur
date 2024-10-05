@@ -1,4 +1,5 @@
-const BLUR_INTENSITY_STORAGE_KEY = "text-blur-intensity";
+import { BLUR_INTENSITY_CUSTOM_PROPERTY } from "./constants.js";
+import { blurIntensityStore } from "./store.js";
 
 const blurIntensityInput: HTMLInputElement =
   document.querySelector("#blur-intensity")!;
@@ -6,32 +7,24 @@ const blurIntensityInput: HTMLInputElement =
 // FIXME: use chrome.storage.sync if possible to sync across user account. In FireFox, this doesn't work unless your manifest has an explicit ID.
 // https://stackoverflow.com/a/74781189/5323344
 
-// Init range value from previously saved value (if one exists)
-chrome.storage.local.get().then((items) => {
-  // Extra precautions
-  if (
-    BLUR_INTENSITY_STORAGE_KEY in items &&
-    typeof items[BLUR_INTENSITY_STORAGE_KEY] !== "undefined"
-  ) {
-    blurIntensityInput.value = items[BLUR_INTENSITY_STORAGE_KEY];
-  }
+// Initialize range value from previously saved value
+blurIntensityStore.get().then((intensity) => {
+  blurIntensityInput.value = intensity.toString();
 });
 
 blurIntensityInput?.addEventListener("input", async () => {
   const blurIntensity = blurIntensityInput.valueAsNumber;
-  // Save the value in storage so we can re-initialize the next time the popup is opened
-  await chrome.storage.local.set({
-    [BLUR_INTENSITY_STORAGE_KEY]: blurIntensity,
-  });
+  await blurIntensityStore.set(blurIntensity);
+
   // Get current tab and set a custom property on the document root so all blurred elements use the new value
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.scripting.executeScript({
     target: { tabId: tab.id! },
-    args: [blurIntensity],
-    func: (intensity) => {
+    args: [BLUR_INTENSITY_CUSTOM_PROPERTY, blurIntensity],
+    func: (BLUR_INTENSITY_CUSTOM_PROPERTY, blurIntensity) => {
       document.documentElement.style.setProperty(
-        "--__text-blur-intensity",
-        intensity.toString()
+        `--${BLUR_INTENSITY_CUSTOM_PROPERTY}`,
+        blurIntensity.toString()
       );
     },
   });

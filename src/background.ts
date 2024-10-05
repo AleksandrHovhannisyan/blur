@@ -1,3 +1,6 @@
+import { BLUR_INTENSITY_CUSTOM_PROPERTY } from "./constants.js";
+import { blurIntensityStore } from "./store.js";
+
 const BLUR_MENU_ITEM_ID = "blur-text";
 
 chrome.contextMenus.create({
@@ -6,12 +9,14 @@ chrome.contextMenus.create({
   contexts: ["selection"],
 });
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (typeof tab?.id !== "undefined" && info.menuItemId === BLUR_MENU_ITEM_ID) {
+    const defaultBlurIntensity = await blurIntensityStore.get();
+
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      args: [],
-      func: () => {
+      args: [defaultBlurIntensity, BLUR_INTENSITY_CUSTOM_PROPERTY],
+      func: (defaultBlurIntensity, BLUR_INTENSITY_CUSTOM_PROPERTY) => {
         const selection = window.getSelection();
         if (!selection || selection.rangeCount === 0) return;
 
@@ -33,7 +38,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
           } else {
             unitMultiplier = `0.5em`;
           }
-          element.style.filter = `blur(calc(var(--__text-blur-intensity, 0.5) * ${unitMultiplier}))`;
+          element.style.filter = `blur(calc(var(--${BLUR_INTENSITY_CUSTOM_PROPERTY}, ${defaultBlurIntensity}) * ${unitMultiplier}))`;
         };
 
         /** Returns all of the text nodes that intersect with the given range. */
