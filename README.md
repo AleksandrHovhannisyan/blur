@@ -4,6 +4,8 @@
 
 ## Installation
 
+This extension is currently pending review. I'll update the links below when it's approved.
+
 - [Firefox](TODO:)
 - [Chrome](TODO:)
 
