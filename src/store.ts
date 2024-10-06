@@ -1,5 +1,5 @@
 function makeBlurIntensityStore() {
-  const BLUR_INTENSITY_STORAGE_KEY = "text-blur-intensity";
+  const BLUR_INTENSITY_STORAGE_KEY = "blur-intensity";
   const DEFAULT_BLUR_INTENSITY = 0.5;
 
   return {
