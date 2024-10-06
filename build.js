@@ -30,5 +30,7 @@ async function customBuild(outDir, manifestSrc) {
   });
 }
 
-await customBuild("dist/chrome", "manifest-chrome.json");
-await customBuild("dist/firefox", "manifest-firefox.json");
+await Promise.all([
+  customBuild("dist/chrome", "manifest-chrome.json"),
+  customBuild("dist/firefox", "manifest-firefox.json")
+]);
