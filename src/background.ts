@@ -28,14 +28,14 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           "noscript",
         ]);
 
-        const ALLOWED_MEDIA_TAGS = new Set(['img', 'video', 'iframe']);
+        const ALLOWED_MEDIA_TAGS = new Set(["img", "video", "iframe"]);
 
         /** Blurs the given element by applying an inline CSS filter. */
         const blurElement = (element: HTMLElement) => {
           let unitMultiplier: `${number}em` | `${number}px`;
           if (ALLOWED_MEDIA_TAGS.has(element.tagName.toLowerCase())) {
             const { clientWidth, clientHeight } = element;
-            unitMultiplier = `${Math.max(clientWidth, clientHeight) * 0.2}px`;
+            unitMultiplier = `${((clientWidth + clientHeight) / 2) * 0.2}px`;
           } else {
             unitMultiplier = `0.5em`;
           }
@@ -84,10 +84,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             endOffset?: number;
           }
         ) => {
-          const {
-            startOffset,
-            endOffset,
-          } = params ?? {};
+          const { startOffset, endOffset } = params ?? {};
 
           // Ignore pure-whitespace nodes. Do this here rather than in tree walker so that the range start/end offsets line up with the actual first/last text nodes in the range.
           if (node.nodeType === Node.TEXT_NODE && !node.textContent?.trim()) {
@@ -131,7 +128,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
               ? (Array.from(
                   (
                     range.commonAncestorContainer as HTMLElement
-                  ).querySelectorAll(Array.from(ALLOWED_MEDIA_TAGS.values()).join(', '))
+                  ).querySelectorAll(
+                    Array.from(ALLOWED_MEDIA_TAGS.values()).join(", ")
+                  )
                 ) as HTMLElement[])
               : []
           ).filter((element) => range.intersectsNode(element));
