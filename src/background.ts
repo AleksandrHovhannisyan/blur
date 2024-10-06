@@ -31,7 +31,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         const getMediaDiagonal = (width: number, height: number) => Math.sqrt(width ** 2 + height ** 2);
         const MEDIA_TAGS = new Set(["img", "video", "iframe"]);
         const MEDIA_BASE_DIAGONAL_LENGTH_PX = getMediaDiagonal(200, 200);
-        const MEDIA_BASE_BLUR_MULTIPLIER = 10;
+        const MEDIA_BASE_BLUR_MULTIPLIER = 20;
         const MEDIA_MIN_BLUR_PX = 8;
         
         /** Blurs the given element by applying an inline CSS filter. */
