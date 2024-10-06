@@ -8,7 +8,7 @@
       color-scheme: light dark;
     }
     body {
-      min-width: calc(320rem / 16);
+      min-width: calc(240rem / 16);
       height: fit-content;
       font-family: system-ui, sans-serif;
       line-height: 1.5;
@@ -33,26 +33,24 @@
     li + li {
       margin-block-start: 0.25rem;
     }
-    .star::marker {
-      content: "⭐";
-    }
-    .heart::marker {
-      content: "❤️";
+    footer {
+      margin-block-start: 2rem;
+      font-size: smaller;
     }
    </style>
  </head>
  <body>
-    <h1>Blur Content</h1>
+    <h1>Blur</h1>
     <fieldset>
       <legend>Settings</legend>
       <label for="blur-intensity">Blur intensity</label>
       <input id="blur-intensity" type="range" min="0.0" max="1.0" value="0.5" step="0.1" />
     </fieldset>
     <footer>
-      <p>Developed by <a href="https://www.aleksandrhovhannisyan.com/">Aleksandr Hovhannisyan</a></p>
+      <p>Made by <a href="https://www.aleksandrhovhannisyan.com/">Aleksandr Hovhannisyan</a></p>
       <ul>
-        <li class="star"><a href="https://github.com/AleksandrHovhannisyan/blur">Star on GitHub</a></li>
-        <li class="heart"><a href="https://buymeacoffee.com/hovhadovah">Support my work</a></li>
+        <li><a href="https://github.com/AleksandrHovhannisyan/blur">Star on GitHub</a></li>
+        <li><a href="https://buymeacoffee.com/hovhadovah">Support my work</a></li>
       </ul>
     </footer>
  </body>
