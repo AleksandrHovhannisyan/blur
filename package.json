@@ -4,8 +4,12 @@
   "license": "MIT",
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "build": "vite build"
+    "clean": "rm -rf dist",
+    "build": "node build.js"
   },
   "keywords": [
     "chrome extension",
@@ -15,6 +19,7 @@
   "devDependencies": {
     "@types/chrome": "^0.0.272",
     "typescript": "^5.6.2",
-    "vite": "^5.4.8"
+    "vite": "^5.4.8",
+    "vite-plugin-static-copy": "^1.0.6"
   }
 }

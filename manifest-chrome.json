@@ -16,16 +16,9 @@
   },
   "background": {
     "type": "module",
-    "service_worker": "src/background.js",
-    "scripts": ["src/background.js"]
+    "service_worker": "src/background.js"
   },
   "action": {
     "default_popup": "src/popup.html"
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "{e729764e-472b-4d03-93ec-f0b2cb6300fa}",
-      "strict_min_version": "109.0"
-    }
   }
 }
