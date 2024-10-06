@@ -1,4 +1,4 @@
-# Blur Content
+# Blur
 
 > A browser extension to blur any highlighted text and media on a page.
 
@@ -11,12 +11,10 @@
 ![Reddit.com front page feed, with all text and images blurred out.](./screenshots/reddit.jpg)
 
 
-## Compatibility
+## Installation
 
-Compatible with:
-
-- Firefox
-- Chrome
+- [Firefox](TODO:)
+- [Chrome](TODO:)
 
 ## Usage
 
