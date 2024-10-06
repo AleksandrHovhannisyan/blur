@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq8wWuHRNFcsBZBm1n/Q2ZVwWxdU+MrXfevzubPvANNjq74pM15xin3NRH8zEZ3rSlKvJ/Xl9GiuS2apZS2hBmdSN1k4vBlYCG0/oQs3fV85vzJwEeGdOprXK6pNY9ITC6oQO8/Sd3Fp4t5GjyRfGlV9JQ/geaIAPEw2iKBFx+2uu7Hmt8dASVmNAPGOa7RoOh1w68eI8EAlftDBePAh+OrREDp/E54xkBKSCxvF87Em37H44rPtbQXXxbS5pPlvxQCQEXE1RRHB43iZ2+BnGCAnA60Cj+i4Av7l1ASKhyW2a4C9WzH15Tz1ejNnWf1TKcXPLNWHSliRpEhKE3y0DawIDAQAB",
   "name": "Blur",
-  "description": "Highlight and blur any text or media on a page.",
+  "description": "Blur any highlighted text or media on a page.",
   "author": {
     "email": "aleksandrhovhannisyan@gmail.com"
   },
