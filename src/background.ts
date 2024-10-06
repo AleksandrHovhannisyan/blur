@@ -35,7 +35,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           let unitMultiplier: `${number}em` | `${number}px`;
           if (ALLOWED_MEDIA_TAGS.has(element.tagName.toLowerCase())) {
             const { clientWidth, clientHeight } = element;
-            unitMultiplier = `${Math.min(clientWidth, clientHeight) * 0.2}px`;
+            unitMultiplier = `${Math.max(clientWidth, clientHeight) * 0.2}px`;
           } else {
             unitMultiplier = `0.5em`;
           }
