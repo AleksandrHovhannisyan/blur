@@ -2,14 +2,20 @@
 
 > Blur any highlighted text or media on a page.
 
-![Google image search results, with all text and images blurred out.](./screenshots/google.jpg)
+Examples:
 
-![Google image search results blurred out. The browser address bar has a popup open for the extension, with a range slider to change the blur intensity.](./screenshots/popup.jpg)
+![Google image search results blurred out. The browser address bar has a popup open for the extension, with a range slider to change the blur intensity.](./screenshots/google.jpg)
 
 ![YouTube video search results, with all text and images blurred out.](./screenshots/youtube.jpg)
 
-![Reddit.com front page feed, with all text and images blurred out.](./screenshots/reddit.jpg)
+![Wikipedia article on Armenia, with most text and images blurred out.](./screenshots/wikipedia.jpg)
 
+(Limitations) This extension can't blur:
+
+- SVG icons
+- Background images
+- Text inputs
+- Anything that can't be highlighted
 
 ## Installation
 
