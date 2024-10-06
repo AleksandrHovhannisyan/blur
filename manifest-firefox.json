@@ -3,7 +3,7 @@
   "name": "Blur",
   "description": "Blur any highlighted text or media on a page.",
   "author": "aleksandrhovhannisyan@gmail.com",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "permissions": ["contextMenus", "scripting", "activeTab", "storage"],
   "icons": {
     "16": "icon-16.png",
