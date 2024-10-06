@@ -27,19 +27,24 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           "iframe",
           "noscript",
         ]);
-
-        const ALLOWED_MEDIA_TAGS = new Set(["img", "video", "iframe"]);
-
+        
+        const getMediaDiagonal = (width: number, height: number) => Math.sqrt(width ** 2 + height ** 2);
+        const MEDIA_TAGS = new Set(["img", "video", "iframe"]);
+        const MEDIA_BASE_DIAGONAL_LENGTH_PX = getMediaDiagonal(200, 200);
+        const MEDIA_BASE_BLUR_MULTIPLIER = 10;
+        const MEDIA_MIN_BLUR_PX = 8;
+        
         /** Blurs the given element by applying an inline CSS filter. */
         const blurElement = (element: HTMLElement) => {
-          let unitMultiplier: `${number}em` | `${number}px`;
-          if (ALLOWED_MEDIA_TAGS.has(element.tagName.toLowerCase())) {
-            const { clientWidth, clientHeight } = element;
-            unitMultiplier = `${((clientWidth + clientHeight) / 2) * 0.2}px`;
+          let blurAmount: `${number}em` | `${number}px`;
+          if (MEDIA_TAGS.has(element.tagName.toLowerCase())) {
+            // Algorithm: compute diagonal, scale it by ideal blur amount for a reference square, and enforce a nonzero minimum blur (for tiny images)
+            const diagonalLengthPx = getMediaDiagonal(element.clientWidth, element.clientHeight);
+            blurAmount = `${Math.max(diagonalLengthPx / MEDIA_BASE_DIAGONAL_LENGTH_PX * MEDIA_BASE_BLUR_MULTIPLIER, MEDIA_MIN_BLUR_PX)}px`;
           } else {
-            unitMultiplier = `0.5em`;
+            blurAmount = `0.5em`;
           }
-          element.style.filter = `blur(calc(var(--${BLUR_INTENSITY_CUSTOM_PROPERTY}, ${defaultBlurIntensity}) * ${unitMultiplier}))`;
+          element.style.filter = `blur(calc(var(--${BLUR_INTENSITY_CUSTOM_PROPERTY}, ${defaultBlurIntensity}) * ${blurAmount}))`;
         };
 
         /** Returns all of the text nodes that intersect with the given range. */
@@ -129,7 +134,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
                   (
                     range.commonAncestorContainer as HTMLElement
                   ).querySelectorAll(
-                    Array.from(ALLOWED_MEDIA_TAGS.values()).join(", ")
+                    Array.from(MEDIA_TAGS.values()).join(", ")
                   )
                 ) as HTMLElement[])
               : []
