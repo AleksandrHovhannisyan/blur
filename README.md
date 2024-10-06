@@ -2,7 +2,12 @@
 
 > Blur any highlighted text or media on a page.
 
-Examples:
+## Installation
+
+- [Firefox](TODO:)
+- [Chrome](TODO:)
+
+## Examples
 
 ![Google image search results blurred out. The browser address bar has a popup open for the extension, with a range slider to change the blur intensity.](./screenshots/google.jpg)
 
@@ -17,11 +22,6 @@ Examples:
 - Text inputs
 - Anything that can't be highlighted
 
-## Installation
-
-- [Firefox](TODO:)
-- [Chrome](TODO:)
-
 ## Usage
 
 1. Highlight text and/or media elements anywhere on a web page.
@@ -32,14 +32,18 @@ You can control the blur intensity from the extension pop-up menu.
 
 ## Local Development Setup
 
-In both Chrome and Firefox, you can load extensions that are being locally developed.
+Prerequisites:
+- Node >= 18
 
-1. Clone the repo.
+Steps:
+1. Clone this repository.
 2. Run `corepack enable` to enable Corepack.
-3. Run `corepack install` to install pnpm.
+3. Run `corepack install` to install pnpm, the package manager for this project.
 4. Run `pnpm install` to install dependencies.
-5. Run `pnpm build` to generate the `dist/` directory.
-6. Choose this directory in your browser's extension manager (e.g., "Load unpacked" in Chrome).
+5. Run `pnpm build` to generate `dist/chrome` and `dist/firefox`.
+6. Choose the right directory in your browser's extension manager
+    - Chrome: Go to `chrome://extensions/` and click `Load unpacked`
+    - Firefox: Go to `about:debugging#/runtime/this-firefox` and click `Load Temporary Add-on...`
 
 ## Feature Planning
 
