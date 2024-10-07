@@ -4,9 +4,6 @@ import { blurIntensityStore } from "./store.js";
 const blurIntensityInput: HTMLInputElement =
   document.querySelector("#blur-intensity")!;
 
-// FIXME: use chrome.storage.sync if possible to sync across user account. In FireFox, this doesn't work unless your manifest has an explicit ID.
-// https://stackoverflow.com/a/74781189/5323344
-
 // Initialize range value from previously saved value
 blurIntensityStore.get().then((intensity) => {
   blurIntensityInput.value = intensity.toString();
