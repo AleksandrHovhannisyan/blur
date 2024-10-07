@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Blur",
   "description": "Blur any highlighted text or media on a page.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "permissions": ["contextMenus", "scripting", "activeTab", "storage"],
   "icons": {
     "16": "icon-16.png",
