@@ -4,10 +4,8 @@ import { blurIntensityStore } from "./store.js";
 const blurIntensityInput: HTMLInputElement =
   document.querySelector("#blur-intensity")!;
 
-// Initialize range value from previously saved value
-blurIntensityStore.get().then((intensity) => {
-  blurIntensityInput.value = intensity.toString();
-});
+const initialBlurIntensity = await blurIntensityStore.get();
+blurIntensityInput.value = initialBlurIntensity.toString();
 
 blurIntensityInput?.addEventListener("input", async () => {
   const blurIntensity = blurIntensityInput.valueAsNumber;
