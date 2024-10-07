@@ -5,16 +5,22 @@ function makeBlurIntensityStore() {
   return {
     /** Returns the current value from the extension storage, or the default intensity if no value was previously saved. */
     async get() {
-      const storage = await chrome.storage.local.get();
-      return Number(
-        storage[BLUR_INTENSITY_STORAGE_KEY] ?? DEFAULT_BLUR_INTENSITY
-      );
+      try {
+        const storage = await chrome.storage.local.get();
+        return Number(
+          storage[BLUR_INTENSITY_STORAGE_KEY] ?? DEFAULT_BLUR_INTENSITY
+        );
+      } catch (e) {
+        return DEFAULT_BLUR_INTENSITY;
+      }
     },
     /** Sets the current value in the extension storage to the provided value. */
     async set(blurIntensity: number) {
-      await chrome.storage.local.set({
-        [BLUR_INTENSITY_STORAGE_KEY]: blurIntensity,
-      });
+      try {
+        await chrome.storage.local.set({
+          [BLUR_INTENSITY_STORAGE_KEY]: blurIntensity,
+        });
+      } catch (e) {}
     },
   };
 }
