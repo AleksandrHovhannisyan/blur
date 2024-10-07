@@ -4,6 +4,7 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 async function customBuild(outDir, manifestSrc) {
   await build({
     build: {
+      target: 'esnext',
       outDir: outDir,
       copyPublicDir: true,
       rollupOptions: {
