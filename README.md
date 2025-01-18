@@ -40,10 +40,10 @@ Steps:
 2. Run `corepack enable` to enable Corepack.
 3. Run `corepack install` to install pnpm, the package manager for this project.
 4. Run `pnpm install` to install dependencies.
-5. Run `pnpm build` to generate `dist/chrome` and `dist/firefox`.
-6. Choose the right directory in your browser's extension manager
-    - Chrome: Go to `chrome://extensions/` and click `Load unpacked`
-    - Firefox: Go to `about:debugging#/runtime/this-firefox` and click `Load Temporary Add-on...`
+5. Run `pnpm dev` to generate `dist/chrome` and `dist/firefox`.
+6. Go to your browser's extension manager and upload the unpacked directory (`dist/chrome` or `dist/firefox`).
+    - Chrome: Go to `chrome://extensions/` and click `Load unpacked`.
+    - Firefox: Go to `about:debugging#/runtime/this-firefox` and click `Load Temporary Add-on...`.
 
 ## Feature Planning
 

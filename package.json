@@ -9,7 +9,8 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "node build.js"
+    "dev": "BUILD_TARGET=development node --watch-path=src/ build.js",
+    "build": "pnpm clean && BUILD_TARGET=production node build.js"
   },
   "keywords": [
     "chrome extension",
@@ -20,6 +21,7 @@
     "@types/chrome": "^0.0.272",
     "@types/node": "^22.7.4",
     "typescript": "^5.6.2",
-    "vite": "^5.4.8"
+    "vite": "^5.4.8",
+    "vite-plugin-zip-pack": "^1.2.4"
   }
 }
